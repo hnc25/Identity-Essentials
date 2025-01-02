@@ -122,95 +122,69 @@ def get_hygiene_data(time_range):
 # Streamlit Layout for Identity
 def display_identity_data():
     st.subheader("Identity Reporting")
-    st.write("The Identity Reporting Dashboard in Connect 2.0 provides clients with actionable insights into their audience universe and unique reach across various channels. Select a time range to view dynamically updated metrics, graphs, and visualizations.")
+    st.write("The Identity Reporting Dashboard provides actionable insights into the audience universe and reach. Select a time range to dynamically update metrics and visualizations.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
+    # Total Profiles Section with Table
     st.subheader("Total Profiles")
-    st.write("Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.")
+    st.write("Displays audience profiles, matched records, and duplication.")
     st.markdown("**Business Goal:** How many unique individuals and households exist in my universe?")
-    
-    # Total Profiles Table
-    total_profiles = data["total_profiles"]
-    total_profiles_df = pd.DataFrame([total_profiles])
-    total_profiles_df = total_profiles_df.rename(index={0: "Values"}).T.reset_index()
-    total_profiles_df.columns = ["Metric", "Value"]
-    st.table(total_profiles_df)
+    total_profiles = pd.DataFrame([data["total_profiles"]])
+    st.table(total_profiles)
 
     # Channel Distribution
     st.subheader("Channel Distribution")
-    st.write("Breaks down total audience reach across different categories.")
-    st.markdown("**Business Goal:** How much unique reach exists across owned marketing channels?")
-
+    st.write("Breaks down total audience identifiers by categories.")
+    st.markdown("**Business Goal:** How much unique reach exists across channels?")
     channel_data = data["channel_distribution"]
     channel_bar_fig = px.bar(
         x=channel_data["Categories"],
         y=channel_data["Total Identifiers"],
-        text=[f"{val:,}" for val in channel_data["Total Identifiers"]],
-        labels={'x': "Category", 'y': "Total Identifiers"},
-        title="Total Identifiers by Channel"
+        title="Total Identifiers by Channel",
+        text_auto=True
     )
     st.plotly_chart(channel_bar_fig)
 
-    # CoreID Match and Reach
+    # CoreID Match & Reach
     st.subheader("CoreID Match and Reach")
-    st.write("Highlights audience reach in Epsilon’s digital channels by showing match rates, actual reach, and performance percentages.")
-    st.markdown("**Business Goal:** How much unique reach do I have in Epsilon’s digital channels?")
-
+    st.write("Shows match and reach performance in digital channels.")
+    st.markdown("**Business Goal:** How much unique reach do I have in digital channels?")
     col1, col2 = st.columns(2)
-    with col1:
-        match_gauge = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=data["coreid_match_reach"]["Match Rate (%)"],
-            title={"text": "Match Rate (%)"},
-            number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
-        ))
-        st.plotly_chart(match_gauge, use_container_width=True)
-    with col2:
-        reach_gauge = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=data["coreid_match_reach"]["Reach Rate (%)"],
-            title={"text": "Reach Rate (%)"},
-            number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
-        ))
-        st.plotly_chart(reach_gauge, use_container_width=True)
+    col1.metric("Match Rate (%)", f"{data['coreid_match_reach']['Match Rate (%)']}%")
+    col2.metric("Reach Rate (%)", f"{data['coreid_match_reach']['Reach Rate (%)']}%")
 
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
     st.subheader("Hygiene Reporting")
-    st.write("The Hygiene Summary dashboard evaluates validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. This enables monitoring data quality, tracking corrections, and improving completed contact records.")
-    
-    # Time Range
-    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
+    st.write("The Hygiene Dashboard evaluates contact data validation and enrichment for better engagement.")
+
+    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_hygiene_data(time_range)
 
     # Contact Complete
     st.subheader("Contact Complete")
-    contact_data = data["contact_complete"]
-    contact_fig = px.bar(
-        x=list(contact_data.keys()),
-        y=list(contact_data.values()),
-        labels={'x': "Category", 'y': "Records"},
-        title="Contact Complete"
-    )
-    st.plotly_chart(contact_fig)
+    st.write("Tracks completed records using Address, Email, and Phone.")
+    st.markdown("**Business Goal:** How complete is my contact data?")
+    contact_data = pd.DataFrame(data["contact_complete"], index=["Values"]).T
+    st.table(contact_data)
 
     # Corrections Donut Chart
     st.subheader("Standardization and Corrections")
+    st.write("Summarizes standardized or corrected records.")
     corrections = data["corrections"]
     corrections_fig = px.pie(
-        names=list(corrections.keys()),
-        values=list(corrections.values()),
+        names=corrections.keys(),
+        values=corrections.values(),
         title="Corrections"
     )
     st.plotly_chart(corrections_fig)
 
-    # Email Standardization
+    # Email Validation
     st.subheader("Email Standardization")
+    st.write("Tracks validation of email records.")
     email_data = data["email_standardization"]
     email_fig = px.pie(
         names=["Valid", "Invalid"],
