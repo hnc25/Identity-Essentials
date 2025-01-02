@@ -121,7 +121,7 @@ def get_hygiene_data(time_range):
 
 # Streamlit Layout for Identity
 def display_identity_data():
-    st.header("Identity Reporting")
+    st.header("Identity Essentials Reporting")
     st.write("This section reports the uniqueness of profiles managed within the Identity Essentials product.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
@@ -172,74 +172,30 @@ def display_identity_data():
             value=data["coreid_match_reach"]["Match Rate (%)"],
             title={"text": "Match Rate (%)"},
             number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}}
+            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
+            domain={"x": [0, 1], "y": [0, 0.5]}
         ))
-        st.plotly_chart(match_gauge)
+        st.plotly_chart(match_gauge, use_container_width=True)
     with col2:
         reach_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
             value=data["coreid_match_reach"]["Reach Rate (%)"],
             title={"text": "Reach Rate (%)"},
             number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}}
+            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
+            domain={"x": [0, 1], "y": [0, 0.5]}
         ))
-        st.plotly_chart(reach_gauge)
-
-
-# Streamlit Layout for Hygiene
-def display_hygiene_data():
-    st.header("Hygiene Reporting")
-    st.write("This section evaluates the validation, enrichment, and standardization of customer contact data.")
-
-    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
-    data = get_hygiene_data(time_range)
-
-    st.subheader("Contact Complete")
-    st.write("Shows the total number of records completed using Address, Email, and Phone.")
-
-    contact_data = data["contact_complete"]
-    contact_fig = px.bar(
-        x=list(contact_data.keys()),
-        y=list(contact_data.values()),
-        text=[f"{val:,}" for val in contact_data.values()],
-        labels={'x': "Category", 'y': "Records"},
-        title="Contact Complete"
-    )
-    st.plotly_chart(contact_fig)
-
-    st.subheader("Standardization and Corrections")
-    st.write("Displays records that were standardized or corrected.")
-
-    corrections = data["corrections"]
-    corrections_fig = px.pie(
-        names=list(corrections.keys()),
-        values=list(corrections.values()),
-        title="Corrections"
-    )
-    st.plotly_chart(corrections_fig)
-
-    st.subheader("Email Standardization")
-    st.write("Shows the validation status of email records.")
-
-    email_data = data["email_standardization"]
-    email_fig = px.pie(
-        names=["Valid", "Invalid"],
-        values=[email_data["Valid"], email_data["Invalid"]],
-        title="Email Validation"
-    )
-    st.plotly_chart(email_fig)
+        st.plotly_chart(reach_gauge, use_container_width=True)
 
 
 # Main App
 def main():
-    st.title("Combined Identity & Hygiene Dashboard")
+    st.title("Identity Essentials Reporting")
 
-    tab = st.sidebar.selectbox("Select a Tab:", ["Identity", "Hygiene"])
+    tab = st.sidebar.selectbox("Select a Tab:", ["Identity"])
 
     if tab == "Identity":
         display_identity_data()
-    elif tab == "Hygiene":
-        display_hygiene_data()
 
 
 if __name__ == "__main__":
