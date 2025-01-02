@@ -151,22 +151,23 @@ def display_identity_data():
     st.plotly_chart(channel_percentage_fig)
 
     st.subheader("CoreID Match and Reach")
-match_gauge = go.Figure(go.Indicator(
-    mode="gauge+number",
-    value=data["coreid_match_reach"]["Match Rate (%)"],
-    title={"text": "Match Rate (%)"},
-    gauge={"axis": {"range": [0, 100]}},
-))  # Correctly closed
+    match_gauge = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=data["coreid_match_reach"]["Match Rate (%)"],
+        title={"text": "Match Rate (%)"},
+        gauge={"axis": {"range": [0, 100]}}  # Correct indentation
+    ))  # Correctly closed
 
-reach_gauge = go.Figure(go.Indicator(
-    mode="gauge+number",
-    value=data["coreid_match_reach"]["Reach Rate (%)"],
-    title={"text": "Reach Rate (%)"},
-    gauge={"axis": {"range": [0, 100]}},
-))  # Correctly closed
+    reach_gauge = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=data["coreid_match_reach"]["Reach Rate (%)"],
+        title={"text": "Reach Rate (%)"},
+        gauge={"axis": {"range": [0, 100]}}  # Correct indentation
+    ))  # Correctly closed
 
-st.plotly_chart(match_gauge)
-st.plotly_chart(reach_gauge)
+    st.plotly_chart(match_gauge)
+    st.plotly_chart(reach_gauge)
+
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
@@ -220,7 +221,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-    gauge={"axis": {"range": [0, 100]}},
-)
-st.plotly_chart(match_gauge)
-st.plotly_chart(reach_gauge)
