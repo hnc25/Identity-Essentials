@@ -127,4 +127,47 @@ The **Combined Identity & Hygiene Dashboard** is a fully interactive and dynamic
 
 ---
 
-This document outlines all updates made during the last iteration. Let me know if you need any additional details or further enhancements! 😊
+1. Identity Reporting
+Overview:
+
+Displays insights into the uniqueness of profiles managed within the Identity Essentials product.
+Provides actionable insights into audience universe and unique reach across various channels.
+Users can select a time range (1 Month, 3 Months, or 6 Months) to dynamically update metrics, graphs, and visualizations.
+Sections:
+
+Total Profiles:
+Description:
+Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.
+Business Goal:
+To understand how many unique individuals and households exist in the user's universe.
+Channel Distribution:
+Description:
+Bar chart showing total identifiers across different categories (Address, Email, Phone).
+Business Goal:
+To determine how much reach exists across owned marketing channels.
+Unique Channel Reach (%):
+Description:
+Highlights the unique reach percentages for each channel (Address, Email, Phone).
+Business Goal:
+To measure the unique reach achieved across owned marketing channels.
+CoreID Match and Reach:
+Description:
+Displays match rates, actual reach, and performance percentages for Epsilon’s digital channels using odometers.
+Business Goal:
+To assess how much unique reach is achieved in Epsilon's digital channels.
+2. Hygiene Reporting
+Overview:
+
+Evaluates the validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records.
+Enables users to monitor data quality, track corrections and standardizations, and ensure completed contact records for improved engagement.
+Sections:
+
+Contact Complete:
+Purpose:
+To track the number of records completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data.
+Standardization and Corrections:
+Purpose:
+To summarize the number and type of records that were standardized, corrected, or moved.
+Email Standardization:
+Purpose:
+To track the validation status of email records, distinguishing between valid and invalid addresses.
