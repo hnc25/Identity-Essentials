@@ -64,61 +64,6 @@ def get_identity_data(time_range):
         }
 
 
-# Hygiene Data
-def get_hygiene_data(time_range):
-    if time_range == "1 Month":
-        return {
-            "contact_complete": {
-                "Address": 45000,
-                "Email": 36000,
-                "Phone": 24000,
-            },
-            "corrections": {
-                "NCOA": 5000,
-                "PCOA": 2000,
-                "PCA": 1000,
-            },
-            "email_standardization": {
-                "Valid": 90000,
-                "Invalid": 4000,
-            }
-        }
-    elif time_range == "3 Months":
-        return {
-            "contact_complete": {
-                "Address": 135000,
-                "Email": 108000,
-                "Phone": 72000,
-            },
-            "corrections": {
-                "NCOA": 15000,
-                "PCOA": 6000,
-                "PCA": 3000,
-            },
-            "email_standardization": {
-                "Valid": 270000,
-                "Invalid": 12000,
-            }
-        }
-    elif time_range == "6 Months":
-        return {
-            "contact_complete": {
-                "Address": 270000,
-                "Email": 216000,
-                "Phone": 144000,
-            },
-            "corrections": {
-                "NCOA": 30000,
-                "PCOA": 12000,
-                "PCA": 6000,
-            },
-            "email_standardization": {
-                "Valid": 540000,
-                "Invalid": 24000,
-            }
-        }
-
-
 # Streamlit Layout for Identity
 def display_identity_data():
     st.subheader("Identity Reporting")
@@ -131,16 +76,15 @@ def display_identity_data():
     st.write("Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.")
     st.markdown("**Business Goal:** How many unique individuals and households exist in my universe?")
     
-    # Total Profiles Table
+    # Convert total profiles data into a table
     total_profiles = data["total_profiles"]
     total_profiles_df = pd.DataFrame([total_profiles])
     total_profiles_df = total_profiles_df.rename(index={0: "Values"}).T.reset_index()
     total_profiles_df.columns = ["Metric", "Value"]
     st.table(total_profiles_df)
 
-    # Channel Distribution
     st.subheader("Channel Distribution")
-    st.write("Breaks down total audience reach across different categories.")
+    st.write("Bar chart showing total identifiers across different categories (Address, Email, Phone).")
     st.markdown("**Business Goal:** How much unique reach exists across owned marketing channels?")
 
     channel_data = data["channel_distribution"]
@@ -153,7 +97,19 @@ def display_identity_data():
     )
     st.plotly_chart(channel_bar_fig)
 
-    # CoreID Match and Reach
+    st.subheader("Unique Channel Reach (%)")
+    st.write("Breaks down the total audience reach across owned marketing channels (Address, Email, Phone) and highlights unique reach percentages.")
+    st.markdown("**Business Goal:** How much unique reach do I have across owned marketing channels?")
+
+    channel_percentage_fig = px.bar(
+        x=channel_data["Categories"],
+        y=channel_data["Unique Channel Reach (%)"],
+        text=[f"{val}%" for val in channel_data["Unique Channel Reach (%)"]],
+        labels={'x': "Category", 'y': "Reach (%)"},
+        title="Unique Channel Reach (%)"
+    )
+    st.plotly_chart(channel_percentage_fig)
+
     st.subheader("CoreID Match and Reach")
     st.write("Highlights audience reach in Epsilon’s digital channels by showing match rates, actual reach, and performance percentages.")
     st.markdown("**Business Goal:** How much unique reach do I have in Epsilon’s digital channels?")
@@ -179,57 +135,14 @@ def display_identity_data():
         st.plotly_chart(reach_gauge, use_container_width=True)
 
 
-# Streamlit Layout for Hygiene
-def display_hygiene_data():
-    st.subheader("Hygiene Reporting")
-    st.write("The Hygiene Summary dashboard evaluates validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. This enables monitoring data quality, tracking corrections, and improving completed contact records.")
-    
-    # Time Range
-    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
-    data = get_hygiene_data(time_range)
-
-    # Contact Complete
-    st.subheader("Contact Complete")
-    contact_data = data["contact_complete"]
-    contact_fig = px.bar(
-        x=list(contact_data.keys()),
-        y=list(contact_data.values()),
-        labels={'x': "Category", 'y': "Records"},
-        title="Contact Complete"
-    )
-    st.plotly_chart(contact_fig)
-
-    # Corrections Donut Chart
-    st.subheader("Standardization and Corrections")
-    corrections = data["corrections"]
-    corrections_fig = px.pie(
-        names=list(corrections.keys()),
-        values=list(corrections.values()),
-        title="Corrections"
-    )
-    st.plotly_chart(corrections_fig)
-
-    # Email Standardization
-    st.subheader("Email Standardization")
-    email_data = data["email_standardization"]
-    email_fig = px.pie(
-        names=["Valid", "Invalid"],
-        values=[email_data["Valid"], email_data["Invalid"]],
-        title="Email Validation"
-    )
-    st.plotly_chart(email_fig)
-
-
 # Main App
 def main():
     st.title("Identity Essentials Reporting")
 
-    tab = st.sidebar.selectbox("Select a Tab:", ["Identity", "Hygiene"])
+    tab = st.sidebar.selectbox("Select a Tab:", ["Identity"])
 
     if tab == "Identity":
         display_identity_data()
-    elif tab == "Hygiene":
-        display_hygiene_data()
 
 
 if __name__ == "__main__":
