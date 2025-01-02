@@ -128,14 +128,20 @@ def display_identity_data():
     data = get_identity_data(time_range)
 
     st.subheader("Total Profiles")
-    for key, value in data["total_profiles"].items():
-        st.write(f"{key}: {value:,}" if "Duplicate" not in key else f"{key}: {value}%")
+    total_profiles = data["total_profiles"]
+    st.write(
+        " | ".join(
+            f"**{key}**: {value:,}" if "Duplicate" not in key else f"**{key}**: {value}%"
+            for key, value in total_profiles.items()
+        )
+    )
 
     st.subheader("Channel Distribution")
     channel_data = data["channel_distribution"]
     channel_bar_fig = px.bar(
         x=channel_data["Categories"],
         y=channel_data["Total Identifiers"],
+        text=[f"{val:,}" for val in channel_data["Total Identifiers"]],
         labels={'x': "Category", 'y': "Total Identifiers"},
         title="Total Identifiers by Channel"
     )
@@ -145,6 +151,7 @@ def display_identity_data():
     channel_percentage_fig = px.bar(
         x=channel_data["Categories"],
         y=channel_data["Unique Channel Reach (%)"],
+        text=[f"{val}%" for val in channel_data["Unique Channel Reach (%)"]],
         labels={'x': "Category", 'y': "Reach (%)"},
         title="Unique Channel Reach (%)"
     )
@@ -155,15 +162,15 @@ def display_identity_data():
         mode="gauge+number",
         value=data["coreid_match_reach"]["Match Rate (%)"],
         title={"text": "Match Rate (%)"},
-        gauge={"axis": {"range": [0, 100]}}  # Correct indentation
-    ))  # Correctly closed
+        gauge={"axis": {"range": [0, 100]}}
+    ))
 
     reach_gauge = go.Figure(go.Indicator(
         mode="gauge+number",
         value=data["coreid_match_reach"]["Reach Rate (%)"],
         title={"text": "Reach Rate (%)"},
-        gauge={"axis": {"range": [0, 100]}}  # Correct indentation
-    ))  # Correctly closed
+        gauge={"axis": {"range": [0, 100]}}
+    ))
 
     st.plotly_chart(match_gauge)
     st.plotly_chart(reach_gauge)
@@ -182,6 +189,7 @@ def display_hygiene_data():
     contact_fig = px.bar(
         x=list(contact_data.keys()),
         y=list(contact_data.values()),
+        text=[f"{val:,}" for val in contact_data.values()],
         labels={'x': "Category", 'y': "Records"},
         title="Contact Complete"
     )
@@ -220,4 +228,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
