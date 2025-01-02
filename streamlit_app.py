@@ -221,6 +221,6 @@ if __name__ == "__main__":
     main()
 
     gauge={"axis": {"range": [0, 100]}},
-))
+)
 st.plotly_chart(match_gauge)
 st.plotly_chart(reach_gauge)
