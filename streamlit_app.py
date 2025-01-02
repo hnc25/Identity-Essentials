@@ -121,6 +121,7 @@ def get_hygiene_data(time_range):
 
 # Streamlit Layout for Identity
 def display_identity_data():
+    st.subheader("Identity Reporting")
     st.write("This section reports the uniqueness of profiles managed within the Identity Essentials product.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
@@ -187,7 +188,7 @@ def display_identity_data():
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
-    st.header("Hygiene Reporting")
+    st.subheader("Hygiene Reporting")
     st.write("This section evaluates the validation, enrichment, and standardization of customer contact data.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
