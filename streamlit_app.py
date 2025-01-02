@@ -121,7 +121,6 @@ def get_hygiene_data(time_range):
 
 # Streamlit Layout for Identity
 def display_identity_data():
-    st.header("Identity Essentials Reporting")
     st.write("This section reports the uniqueness of profiles managed within the Identity Essentials product.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
