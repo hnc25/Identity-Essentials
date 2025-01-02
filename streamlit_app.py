@@ -128,15 +128,18 @@ def display_identity_data():
     data = get_identity_data(time_range)
 
     st.subheader("Total Profiles")
+    st.write("This section shows the key metrics for total profiles.")
+
     total_profiles = data["total_profiles"]
-    st.write(
-        " | ".join(
-            f"**{key}**: {value:,}" if "Duplicate" not in key else f"**{key}**: {value}%"
-            for key, value in total_profiles.items()
-        )
-    )
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total Profiles", f"{total_profiles['Total Profiles']:,}")
+    col2.metric("Matched csCoreID", f"{total_profiles['Matched csCoreID']:,}")
+    col3.metric("Matched csHHId", f"{total_profiles['Matched csHHId']:,}")
+    col4.metric("Duplicate Records (%)", f"{total_profiles['Duplicate Records (%)']}%")
 
     st.subheader("Channel Distribution")
+    st.write("Bar chart showing total identifiers across different categories.")
+
     channel_data = data["channel_distribution"]
     channel_bar_fig = px.bar(
         x=channel_data["Categories"],
@@ -148,6 +151,8 @@ def display_identity_data():
     st.plotly_chart(channel_bar_fig)
 
     st.subheader("Unique Channel Reach (%)")
+    st.write("Displays the percentage reach for each channel.")
+
     channel_percentage_fig = px.bar(
         x=channel_data["Categories"],
         y=channel_data["Unique Channel Reach (%)"],
@@ -158,22 +163,27 @@ def display_identity_data():
     st.plotly_chart(channel_percentage_fig)
 
     st.subheader("CoreID Match and Reach")
-    match_gauge = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=data["coreid_match_reach"]["Match Rate (%)"],
-        title={"text": "Match Rate (%)"},
-        gauge={"axis": {"range": [0, 100]}}
-    ))
+    st.write("Displays match rate and reach rate as odometers.")
 
-    reach_gauge = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=data["coreid_match_reach"]["Reach Rate (%)"],
-        title={"text": "Reach Rate (%)"},
-        gauge={"axis": {"range": [0, 100]}}
-    ))
-
-    st.plotly_chart(match_gauge)
-    st.plotly_chart(reach_gauge)
+    col1, col2 = st.columns(2)
+    with col1:
+        match_gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=data["coreid_match_reach"]["Match Rate (%)"],
+            title={"text": "Match Rate (%)"},
+            number={"suffix": "%"},
+            gauge={"axis": {"range": [0, 100]}}
+        ))
+        st.plotly_chart(match_gauge)
+    with col2:
+        reach_gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=data["coreid_match_reach"]["Reach Rate (%)"],
+            title={"text": "Reach Rate (%)"},
+            number={"suffix": "%"},
+            gauge={"axis": {"range": [0, 100]}}
+        ))
+        st.plotly_chart(reach_gauge)
 
 
 # Streamlit Layout for Hygiene
@@ -185,6 +195,8 @@ def display_hygiene_data():
     data = get_hygiene_data(time_range)
 
     st.subheader("Contact Complete")
+    st.write("Shows the total number of records completed using Address, Email, and Phone.")
+
     contact_data = data["contact_complete"]
     contact_fig = px.bar(
         x=list(contact_data.keys()),
@@ -196,6 +208,8 @@ def display_hygiene_data():
     st.plotly_chart(contact_fig)
 
     st.subheader("Standardization and Corrections")
+    st.write("Displays records that were standardized or corrected.")
+
     corrections = data["corrections"]
     corrections_fig = px.pie(
         names=list(corrections.keys()),
@@ -205,6 +219,8 @@ def display_hygiene_data():
     st.plotly_chart(corrections_fig)
 
     st.subheader("Email Standardization")
+    st.write("Shows the validation status of email records.")
+
     email_data = data["email_standardization"]
     email_fig = px.pie(
         names=["Valid", "Invalid"],
