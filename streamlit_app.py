@@ -133,35 +133,49 @@ def display_identity_data():
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(f"""
-            <div style="background-color:#f8f9fa; border-radius:8px; padding:10px; text-align:center;">
-                <strong>Total Profiles</strong><br>{total_profiles['Total Profiles']:,}
+            <div style="border: 1px solid lightgray; border-radius: 5px; padding: 10px; background-color: #f9f9f9; text-align: center;">
+                <strong>Total Profiles</strong><br>
+                <span style="font-size: 24px;">{total_profiles['Total Profiles']:,}</span>
             </div>
         """, unsafe_allow_html=True)
     with col2:
         st.markdown(f"""
-            <div style="background-color:#f8f9fa; border-radius:8px; padding:10px; text-align:center;">
-                <strong>Matched csCoreID</strong><br>{total_profiles['Matched csCoreID']:,}
+            <div style="border: 1px solid lightgray; border-radius: 5px; padding: 10px; background-color: #f9f9f9; text-align: center;">
+                <strong>Matched csCoreID</strong><br>
+                <span style="font-size: 24px;">{total_profiles['Matched csCoreID']:,}</span>
             </div>
         """, unsafe_allow_html=True)
     with col3:
         st.markdown(f"""
-            <div style="background-color:#f8f9fa; border-radius:8px; padding:10px; text-align:center;">
-                <strong>Matched csHHId</strong><br>{total_profiles['Matched csHHId']:,}
+            <div style="border: 1px solid lightgray; border-radius: 5px; padding: 10px; background-color: #f9f9f9; text-align: center;">
+                <strong>Matched csHHId</strong><br>
+                <span style="font-size: 24px;">{total_profiles['Matched csHHId']:,}</span>
             </div>
         """, unsafe_allow_html=True)
     with col4:
         st.markdown(f"""
-            <div style="background-color:#f8f9fa; border-radius:8px; padding:10px; text-align:center;">
-                <strong>Duplicate Records (%)</strong><br>{total_profiles['Duplicate Records (%)']}%
+            <div style="border: 1px solid lightgray; border-radius: 5px; padding: 10px; background-color: #f9f9f9; text-align: center;">
+                <strong>Duplicate Records (%)</strong><br>
+                <span style="font-size: 24px;">{total_profiles['Duplicate Records (%)']}%</span>
             </div>
         """, unsafe_allow_html=True)
 
-    # Remaining layout unchanged...
+    # Remaining sections of Identity Reporting...
+    # (Add charts and other components here)
 
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
-    # Hygiene layout code remains unchanged...
+    st.subheader("Hygiene Reporting")
+    st.write("The Hygiene Summary dashboard evaluates the validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. It enables users to monitor data quality, track corrections and standardizations, and ensure completed contact records for improved engagement.")
+
+    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
+    data = get_hygiene_data(time_range)
+
+    st.subheader("Contact Complete")
+    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data?")
+    # Contact Complete Chart...
+    # Add corrections and email standardization sections...
 
 
 # Main App
