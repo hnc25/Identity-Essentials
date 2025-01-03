@@ -118,7 +118,6 @@ def get_hygiene_data(time_range):
             }
         }
 
-
 # Streamlit Layout for Identity
 def display_identity_data():
     st.subheader("Identity Reporting")
@@ -215,22 +214,33 @@ def display_hygiene_data():
     st.write("What is the total number of records that were standardized, corrected, or moved?")
 
     corrections = data["corrections"]
+    corrections_total = sum(corrections.values())
+    corrections_percent = {key: (value / corrections_total) * 100 for key, value in corrections.items()}
     corrections_fig = px.pie(
         names=list(corrections.keys()),
         values=list(corrections.values()),
-        title="Corrections"
+        title="Corrections",
+        hole=0.4
     )
+    corrections_fig.update_traces(textinfo='percent+label')
     st.plotly_chart(corrections_fig)
 
     st.subheader("Email Standardization")
     st.write("What is the total number of email records that were standardized?")
 
     email_data = data["email_standardization"]
+    email_total = email_data["Valid"] + email_data["Invalid"]
+    email_percent = {
+        "Valid": (email_data["Valid"] / email_total) * 100,
+        "Invalid": (email_data["Invalid"] / email_total) * 100,
+    }
     email_fig = px.pie(
         names=["Valid", "Invalid"],
         values=[email_data["Valid"], email_data["Invalid"]],
-        title="Email Validation"
+        title="Email Validation",
+        hole=0.4
     )
+    email_fig.update_traces(textinfo='percent+label')
     st.plotly_chart(email_fig)
 
 
