@@ -227,7 +227,7 @@ def display_hygiene_data():
     data = get_hygiene_data(time_range)
 
     st.subheader("Contact Complete")
-    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data?")
+    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and Trade Area data?")
 
     contact_data = data["contact_complete"]
     contact_fig = px.bar(
