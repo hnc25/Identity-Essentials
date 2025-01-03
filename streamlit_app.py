@@ -158,7 +158,7 @@ st.markdown(
     )
 
     # Render the metrics in boxed format with equal sizes
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(
             f"""
