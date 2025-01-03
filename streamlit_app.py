@@ -126,68 +126,79 @@ def display_identity_data():
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
-    st.subheader("Total Profiles")
-    #st.write("Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.")
-    st.markdown("**Business Goal:** How many unique individuals and households exist in my universe?")
-    
-    total_profiles = data["total_profiles"]
+        st.markdown(
+        """
+        <style>
+        .metric-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 200px; /* Set a fixed width */
+            height: 120px; /* Set a fixed height */
+            padding: 10px;
+            margin: 5px;
+            text-align: center;
+        }
+        .metric-box .metric-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .metric-box .metric-value {
+            font-size: 1.5em;
+            color: #333;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Render the metrics in boxed format with equal sizes
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Profiles", f"{total_profiles['Total Profiles']:,}")
-    col2.metric("Matched csCoreID", f"{total_profiles['Matched csCoreID']:,}")
-    col3.metric("Matched csHHId", f"{total_profiles['Matched csHHId']:,}")
-    col4.metric("Duplicate Records (%)", f"{total_profiles['Duplicate Records (%)']}%")
-
-    st.subheader("Channel Distribution")
-    #st.write("Bar chart showing total identifiers across different categories (Address, Email, Phone).")
-    st.markdown("**Business Goal:** How much unique reach exists across my owned marketing channels?")
-
-    channel_data = data["channel_distribution"]
-    channel_bar_fig = px.bar(
-        x=channel_data["Categories"],
-        y=channel_data["Total Identifiers"],
-        text=[f"{val:,}" for val in channel_data["Total Identifiers"]],
-        labels={'x': "Category", 'y': "Total Identifiers"},
-        title="Total Identifiers by Channel"
-    )
-    st.plotly_chart(channel_bar_fig)
-
-    st.subheader("Unique Channel Reach (%)")
-    #st.write("Breaks down the total audience reach across owned marketing channels (Address, Email, Phone) and highlights unique reach percentages.")
-    #st.markdown("**Business Goal:** How much unique reach exists across my owned marketing channels?")
-
-    channel_percentage_fig = px.bar(
-        x=channel_data["Categories"],
-        y=channel_data["Unique Channel Reach (%)"],
-        text=[f"{val}%" for val in channel_data["Unique Channel Reach (%)"]],
-        labels={'x': "Category", 'y': "Reach (%)"},
-        title="Unique Channel Reach (%)"
-    )
-    st.plotly_chart(channel_percentage_fig)
-
-    st.subheader("CoreID Match and Reach")
-    #st.write("Highlights audience reach in Epsilon’s digital channels by showing match rates, actual reach, and performance percentages.")
-    st.markdown("**Business Goal:** How much unique reach do I have in Epsilon’s digital channels?")
-
-    col1, col2 = st.columns(2)
     with col1:
-        match_gauge = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=data["coreid_match_reach"]["Match Rate (%)"],
-            title={"text": "Match Rate (%)"},
-            number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
-        ))
-        st.plotly_chart(match_gauge, use_container_width=True)
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Total Profiles</div>
+                <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     with col2:
-        reach_gauge = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=data["coreid_match_reach"]["Reach Rate (%)"],
-            title={"text": "Reach Rate (%)"},
-            number={"suffix": "%"},
-            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
-        ))
-        st.plotly_chart(reach_gauge, use_container_width=True)
-
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Matched csCoreID</div>
+                <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col3:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Matched csHHId</div>
+                <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col4:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Duplicate Records (%)</div>
+                <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
