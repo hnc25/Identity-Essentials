@@ -2,7 +2,6 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 
-
 # Identity Data
 def get_identity_data(time_range):
     if time_range == "1 Month":
@@ -118,163 +117,13 @@ def get_hygiene_data(time_range):
             }
         }
 
-# Streamlit Layout for Identity
+# Identity Reporting
 def display_identity_data():
     st.subheader("Identity Reporting")
     st.write("The Identity Reporting Dashboard in Connect 2.0 provides clients with actionable insights into their audience universe and unique reach across various channels.")
 
-    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
+    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="identity")
     data = get_identity_data(time_range)
-
-total_profiles = data["total_profiles"]
-
-# Add boxed-out metrics with a slightly grayed-out background
-st.markdown(
-    """
-    <style>
-    .metric-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        width: 200px; /* Set a fixed width */
-        height: 120px; /* Set a fixed height */
-        padding: 10px;
-        margin: 5px;
-        text-align: center;
-    }
-    .metric-box .metric-title {
-        font-weight: bold;
-        font-size: 1.2em;
-        margin-bottom: 5px;
-    }
-    .metric-box .metric-value {
-        font-size: 1.5em;
-        color: #333;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Render the metrics in boxed format with equal sizes
-col1, col2, col3, col4 = st.columns(4)
-
-# Use proper indentation for the columns
-with col1:
-    st.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Total Profiles</div>
-            <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col2:
-    st.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Matched csCoreID</div>
-            <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col3:
-    st.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Matched csHHId</div>
-            <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col4:
-    st.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Duplicate Records (%)</div>
-            <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-# Streamlit Layout for Hygiene
-def display_hygiene_data():
-    st.subheader("Hygiene Reporting")
-    st.write("The Hygiene Summary dashboard evaluates the validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. It enables users to monitor data quality, track corrections and standardizations, and ensure completed contact records for improved engagement.")
-
-    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
-    data = get_hygiene_data(time_range)
-
-    st.subheader("Contact Complete")
-    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data?")
-
-    contact_data = data["contact_complete"]
-    contact_fig = px.bar(
-        x=list(contact_data.keys()),
-        y=list(contact_data.values()),
-        text=[f"{val:,}" for val in contact_data.values()],
-        labels={'x': "Category", 'y': "Records"},
-        title="Contact Complete"
-    )
-    st.plotly_chart(contact_fig)
-
-    st.subheader("Standardization and Corrections")
-    st.write("What is the total number of records that were standardized, corrected, or moved?")
-
-    corrections = data["corrections"]
-    corrections_total = sum(corrections.values())
-    corrections_percent = {key: (value / corrections_total) * 100 for key, value in corrections.items()}
-    corrections_fig = px.pie(
-        names=list(corrections.keys()),
-        values=list(corrections.values()),
-        title="Corrections",
-        hole=0.4
-    )
-    corrections_fig.update_traces(textinfo='percent+label')
-    st.plotly_chart(corrections_fig)
-
-    st.subheader("Email Standardization")
-    st.write("What is the total number of email records that were standardized?")
-
-    email_data = data["email_standardization"]
-    email_total = email_data["Valid"] + email_data["Invalid"]
-    email_percent = {
-        "Valid": (email_data["Valid"] / email_total) * 100,
-        "Invalid": (email_data["Invalid"] / email_total) * 100,
-    }
-    email_fig = px.pie(
-        names=["Valid", "Invalid"],
-        values=[email_data["Valid"], email_data["Invalid"]],
-        title="Email Validation",
-        hole=0.4
-    )
-    email_fig.update_traces(textinfo='percent+label')
-    st.plotly_chart(email_fig)
-
-
-# Main App
-def main():
-    st.title("Identity Essentials Reporting")
-
-    tab = st.sidebar.selectbox("Select a Tab:", ["Identity", "Hygiene"])
-
-    if tab == "Identity":
-        display_identity_data()
-    elif tab == "Hygiene":
-        display_hygiene_data()
-
-
-if __name__ == "__main__":
-    main()
-
 
     total_profiles = data["total_profiles"]
 
@@ -290,6 +139,8 @@ if __name__ == "__main__":
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 10px;
+            width: 200px;
+            height: 120px;
             padding: 10px;
             margin: 5px;
             text-align: center;
@@ -308,41 +159,97 @@ if __name__ == "__main__":
         unsafe_allow_html=True,
     )
 
-    # Render the metrics in boxed format
     col1, col2, col3, col4 = st.columns(4)
-    col1.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Total Profiles</div>
-            <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    with col1:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Total Profiles</div>
+                <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col2:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Matched csCoreID</div>
+                <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col3:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Matched csHHId</div>
+                <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col4:
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-title">Duplicate Records (%)</div>
+                <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+# Hygiene Reporting
+def display_hygiene_data():
+    st.subheader("Hygiene Reporting")
+    st.write("The Hygiene Summary dashboard evaluates the validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. It enables users to monitor data quality, track corrections and standardizations, and ensure completed contact records for improved engagement.")
+
+    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
+    data = get_hygiene_data(time_range)
+
+    st.subheader("Contact Complete")
+    contact_data = data["contact_complete"]
+    contact_fig = px.bar(
+        x=list(contact_data.keys()),
+        y=list(contact_data.values()),
+        text=[f"{val:,}" for val in contact_data.values()],
+        labels={'x': "Category", 'y': "Records"},
+        title="Contact Complete"
     )
-    col2.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Matched csCoreID</div>
-            <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    st.plotly_chart(contact_fig)
+
+    st.subheader("Standardization and Corrections")
+    corrections = data["corrections"]
+    corrections_fig = px.pie(
+        names=list(corrections.keys()),
+        values=list(corrections.values()),
+        title="Corrections"
     )
-    col3.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Matched csHHId</div>
-            <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    corrections_fig.update_traces(textinfo='percent+label')
+    st.plotly_chart(corrections_fig)
+
+    st.subheader("Email Standardization")
+    email_data = data["email_standardization"]
+    email_fig = px.pie(
+        names=["Valid", "Invalid"],
+        values=[email_data["Valid"], email_data["Invalid"]],
+        title="Email Validation"
     )
-    col4.markdown(
-        f"""
-        <div class="metric-box">
-            <div class="metric-title">Duplicate Records (%)</div>
-            <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    email_fig.update_traces(textinfo='percent+label')
+    st.plotly_chart(email_fig)
+
+# Main App
+def main():
+    st.title("Identity Essentials Reporting")
+
+    tab = st.sidebar.selectbox("Select a Tab:", ["Identity Reporting", "Hygiene Reporting"])
+
+    if tab == "Identity Reporting":
+        display_identity_data()
+    elif tab == "Hygiene Reporting":
+        display_hygiene_data()
+
+if __name__ == "__main__":
+    main()
