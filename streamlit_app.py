@@ -126,7 +126,7 @@ def display_identity_data():
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
-        total_profiles = data["total_profiles"]
+    total_profiles = data["total_profiles"]
 
     # Add boxed-out metrics with a slightly grayed-out background
     st.markdown(
