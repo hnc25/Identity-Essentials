@@ -74,13 +74,13 @@ def get_hygiene_data(time_range):
                 "Phone": 24000,
             },
             "corrections": {
-                "NCOA": 5000,
-                "PCOA": 2000,
-                "PCA": 1000,
+                "NCOA": 5500,
+                "PCOA": 2200,
+                "PCA": 1100,
             },
             "email_standardization": {
-                "Valid": 90000,
-                "Invalid": 4000,
+                "Valid": 90500,
+                "Invalid": 4500,
             }
         }
     elif time_range == "3 Months":
@@ -91,13 +91,13 @@ def get_hygiene_data(time_range):
                 "Phone": 72000,
             },
             "corrections": {
-                "NCOA": 15000,
-                "PCOA": 6000,
-                "PCA": 3000,
+                "NCOA": 15500,
+                "PCOA": 6200,
+                "PCA": 3100,
             },
             "email_standardization": {
-                "Valid": 270000,
-                "Invalid": 12000,
+                "Valid": 270800,
+                "Invalid": 12400,
             }
         }
     elif time_range == "6 Months":
@@ -108,13 +108,13 @@ def get_hygiene_data(time_range):
                 "Phone": 144000,
             },
             "corrections": {
-                "NCOA": 30000,
-                "PCOA": 12000,
-                "PCA": 6000,
+                "NCOA": 30300,
+                "PCOA": 12500,
+                "PCA": 6100,
             },
             "email_standardization": {
-                "Valid": 540000,
-                "Invalid": 24000,
+                "Valid": 540500,
+                "Invalid": 24600,
             }
         }
 
@@ -122,13 +122,13 @@ def get_hygiene_data(time_range):
 # Streamlit Layout for Identity
 def display_identity_data():
     st.subheader("Identity Reporting")
-    st.write("The Identity Reporting Dashboard in Connect 2.0 provides clients with actionable insights into their audience universe and unique reach across various channels. Select a time range to view dynamically updated metrics, graphs, and visualizations.")
+    st.write("The Identity Reporting Dashboard in Connect 2.0 provides clients with actionable insights into their audience universe and unique reach across various channels.")
 
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
     st.subheader("Total Profiles")
-    st.write("Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.")
+    #st.write("Displays the total number of audience profiles ingested into the system, including matched individuals and households, and accounts for duplication.")
     st.markdown("**Business Goal:** How many unique individuals and households exist in my universe?")
     
     total_profiles = data["total_profiles"]
@@ -139,8 +139,8 @@ def display_identity_data():
     col4.metric("Duplicate Records (%)", f"{total_profiles['Duplicate Records (%)']}%")
 
     st.subheader("Channel Distribution")
-    st.write("Bar chart showing total identifiers across different categories (Address, Email, Phone).")
-    st.markdown("**Business Goal:** How much unique reach exists across owned marketing channels?")
+    #st.write("Bar chart showing total identifiers across different categories (Address, Email, Phone).")
+    st.markdown("**Business Goal:** How much unique reach exists across my owned marketing channels?")
 
     channel_data = data["channel_distribution"]
     channel_bar_fig = px.bar(
@@ -153,8 +153,8 @@ def display_identity_data():
     st.plotly_chart(channel_bar_fig)
 
     st.subheader("Unique Channel Reach (%)")
-    st.write("Breaks down the total audience reach across owned marketing channels (Address, Email, Phone) and highlights unique reach percentages.")
-    st.markdown("**Business Goal:** How much unique reach do I have across owned marketing channels?")
+    #st.write("Breaks down the total audience reach across owned marketing channels (Address, Email, Phone) and highlights unique reach percentages.")
+    #st.markdown("**Business Goal:** How much unique reach exists across my owned marketing channels?")
 
     channel_percentage_fig = px.bar(
         x=channel_data["Categories"],
@@ -166,7 +166,7 @@ def display_identity_data():
     st.plotly_chart(channel_percentage_fig)
 
     st.subheader("CoreID Match and Reach")
-    st.write("Highlights audience reach in Epsilon’s digital channels by showing match rates, actual reach, and performance percentages.")
+    #st.write("Highlights audience reach in Epsilon’s digital channels by showing match rates, actual reach, and performance percentages.")
     st.markdown("**Business Goal:** How much unique reach do I have in Epsilon’s digital channels?")
 
     col1, col2 = st.columns(2)
@@ -199,7 +199,7 @@ def display_hygiene_data():
     data = get_hygiene_data(time_range)
 
     st.subheader("Contact Complete")
-    st.write("To track how many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data.")
+    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data?")
 
     contact_data = data["contact_complete"]
     contact_fig = px.bar(
@@ -212,7 +212,7 @@ def display_hygiene_data():
     st.plotly_chart(contact_fig)
 
     st.subheader("Standardization and Corrections")
-    st.write("To summarize the number and type of records that were standardized, corrected, or moved.")
+    st.write("What is the total number of records that were standardized, corrected, or moved?")
 
     corrections = data["corrections"]
     corrections_fig = px.pie(
@@ -223,7 +223,7 @@ def display_hygiene_data():
     st.plotly_chart(corrections_fig)
 
     st.subheader("Email Standardization")
-    st.write("To track the validation status of email records, distinguishing between valid and invalid addresses.")
+    st.write("What is the total number of email records that were standardized?")
 
     email_data = data["email_standardization"]
     email_fig = px.pie(
