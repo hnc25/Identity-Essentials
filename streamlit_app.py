@@ -134,42 +134,42 @@ def display_identity_data():
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(
-            """
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;">
-                <h5 style="text-align: center;">Total Profiles</h5>
-                <p style="text-align: center; font-size: 24px; font-weight: bold;">{:,}</p>
+            f"""
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; text-align: center;">
+                <h6 style="font-size: 14px;">Total Profiles</h6>
+                <p style="font-size: 20px; font-weight: bold;">{total_profiles['Total Profiles']:,}</p>
             </div>
-            """.format(total_profiles["Total Profiles"]),
+            """,
             unsafe_allow_html=True,
         )
     with col2:
         st.markdown(
-            """
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;">
-                <h5 style="text-align: center;">Matched csCoreID</h5>
-                <p style="text-align: center; font-size: 24px; font-weight: bold;">{:,}</p>
+            f"""
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; text-align: center;">
+                <h6 style="font-size: 14px;">Matched csCoreID</h6>
+                <p style="font-size: 20px; font-weight: bold;">{total_profiles['Matched csCoreID']:,}</p>
             </div>
-            """.format(total_profiles["Matched csCoreID"]),
+            """,
             unsafe_allow_html=True,
         )
     with col3:
         st.markdown(
-            """
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;">
-                <h5 style="text-align: center;">Matched csHHId</h5>
-                <p style="text-align: center; font-size: 24px; font-weight: bold;">{:,}</p>
+            f"""
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; text-align: center;">
+                <h6 style="font-size: 14px;">Matched csHHId</h6>
+                <p style="font-size: 20px; font-weight: bold;">{total_profiles['Matched csHHId']:,}</p>
             </div>
-            """.format(total_profiles["Matched csHHId"]),
+            """,
             unsafe_allow_html=True,
         )
     with col4:
         st.markdown(
-            """
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px;">
-                <h5 style="text-align: center;">Duplicate Records (%)</h5>
-                <p style="text-align: center; font-size: 24px; font-weight: bold;">{}%</p>
+            f"""
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; text-align: center;">
+                <h6 style="font-size: 14px;">Duplicate Records (%)</h6>
+                <p style="font-size: 20px; font-weight: bold;">{total_profiles['Duplicate Records (%)']}%</p>
             </div>
-            """.format(total_profiles["Duplicate Records (%)"]),
+            """,
             unsafe_allow_html=True,
         )
 
@@ -203,7 +203,7 @@ def display_identity_data():
             mode="gauge+number",
             value=data["coreid_match_reach"]["Match Rate (%)"],
             title={"text": "Match Rate (%)"},
-            number={"suffix": "%", "font": {"size": 40}},
+            number={"suffix": "%", "font": {"size": 30}},
             gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
         ))
         st.plotly_chart(match_gauge, use_container_width=True)
@@ -212,20 +212,70 @@ def display_identity_data():
             mode="gauge+number",
             value=data["coreid_match_reach"]["Reach Rate (%)"],
             title={"text": "Reach Rate (%)"},
-            number={"suffix": "%", "font": {"size": 40}},
+            number={"suffix": "%", "font": {"size": 30}},
             gauge={"axis": {"range": [0, 100]}, "bar": {"color": "green"}},
         ))
         st.plotly_chart(reach_gauge, use_container_width=True)
 
 
+# Streamlit Layout for Hygiene
+def display_hygiene_data():
+    st.subheader("Hygiene Reporting")
+    st.write("The Hygiene Summary dashboard evaluates the validation, enrichment, and standardization of customer contact data, including email, phone, ZIP/Name, and address records. It enables users to monitor data quality, track corrections and standardizations, and ensure completed contact records for improved engagement.")
+
+    time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0, key="hygiene")
+    data = get_hygiene_data(time_range)
+
+    st.subheader("Contact Complete")
+    st.write("How many records were completed (validated, matched, or enriched) across email, phone, ZIP/Name, and TAC data?")
+
+    contact_data = data["contact_complete"]
+    contact_fig = px.bar(
+        x=list(contact_data.keys()),
+        y=list(contact_data.values()),
+        text=[f"{val:,}" for val in contact_data.values()],
+        labels={'x': "Category", 'y': "Records"},
+        title="Contact Complete"
+    )
+    st.plotly_chart(contact_fig)
+
+    st.subheader("Standardization and Corrections")
+    st.write("What is the total number of records that were standardized, corrected, or moved?")
+
+    corrections = data["corrections"]
+    corrections_fig = px.pie(
+        names=list(corrections.keys()),
+        values=list(corrections.values()),
+        title="Corrections",
+        hole=0.4
+    )
+    corrections_fig.update_traces(textinfo='percent+label')
+    st.plotly_chart(corrections_fig)
+
+    st.subheader("Email Standardization")
+    st.write("What is the total number of email records that were standardized?")
+
+    email_data = data["email_standardization"]
+    email_fig = px.pie(
+        names=["Valid", "Invalid"],
+        values=[email_data["Valid"], email_data["Invalid"]],
+        title="Email Validation",
+        hole=0.4
+    )
+    email_fig.update_traces(textinfo='percent+label')
+    st.plotly_chart(email_fig)
+
+
 # Main App
 def main():
     st.title("Identity Essentials Reporting")
+
     tab = st.sidebar.selectbox("Select a Tab:", ["Identity", "Hygiene"])
+
     if tab == "Identity":
         display_identity_data()
     elif tab == "Hygiene":
-        pass  # Add Hygiene here
+        display_hygiene_data()
 
 
 if __name__ == "__main__":
