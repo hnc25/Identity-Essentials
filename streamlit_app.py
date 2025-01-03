@@ -126,79 +126,84 @@ def display_identity_data():
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
+total_profiles = data["total_profiles"]
+
+# Add boxed-out metrics with a slightly grayed-out background
 st.markdown(
-        """
-        <style>
-        .metric-box {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            width: 200px; /* Set a fixed width */
-            height: 120px; /* Set a fixed height */
-            padding: 10px;
-            margin: 5px;
-            text-align: center;
-        }
-        .metric-box .metric-title {
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 5px;
-        }
-        .metric-box .metric-value {
-            font-size: 1.5em;
-            color: #333;
-        }
-        </style>
+    """
+    <style>
+    .metric-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        width: 200px; /* Set a fixed width */
+        height: 120px; /* Set a fixed height */
+        padding: 10px;
+        margin: 5px;
+        text-align: center;
+    }
+    .metric-box .metric-title {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+    }
+    .metric-box .metric-value {
+        font-size: 1.5em;
+        color: #333;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Render the metrics in boxed format with equal sizes
+col1, col2, col3, col4 = st.columns(4)
+
+# Use proper indentation for the columns
+with col1:
+    st.markdown(
+        f"""
+        <div class="metric-box">
+            <div class="metric-title">Total Profiles</div>
+            <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
-
-    # Render the metrics in boxed format with equal sizes
-col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.markdown(
-            f"""
-            <div class="metric-box">
-                <div class="metric-title">Total Profiles</div>
-                <div class="metric-value">{total_profiles['Total Profiles']:,}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with col2:
-        st.markdown(
-            f"""
-            <div class="metric-box">
-                <div class="metric-title">Matched csCoreID</div>
-                <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with col3:
-        st.markdown(
-            f"""
-            <div class="metric-box">
-                <div class="metric-title">Matched csHHId</div>
-                <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with col4:
-        st.markdown(
-            f"""
-            <div class="metric-box">
-                <div class="metric-title">Duplicate Records (%)</div>
-                <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+with col2:
+    st.markdown(
+        f"""
+        <div class="metric-box">
+            <div class="metric-title">Matched csCoreID</div>
+            <div class="metric-value">{total_profiles['Matched csCoreID']:,}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+with col3:
+    st.markdown(
+        f"""
+        <div class="metric-box">
+            <div class="metric-title">Matched csHHId</div>
+            <div class="metric-value">{total_profiles['Matched csHHId']:,}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+with col4:
+    st.markdown(
+        f"""
+        <div class="metric-box">
+            <div class="metric-title">Duplicate Records (%)</div>
+            <div class="metric-value">{total_profiles['Duplicate Records (%)']}%</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # Streamlit Layout for Hygiene
 def display_hygiene_data():
