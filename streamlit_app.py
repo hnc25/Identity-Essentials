@@ -62,7 +62,6 @@ def get_identity_data(time_range):
             },
         }
 
-
 # Hygiene Data
 def get_hygiene_data(time_range):
     if time_range == "1 Month":
@@ -127,7 +126,7 @@ def display_identity_data():
 
     total_profiles = data["total_profiles"]
 
-    # Add boxed-out metrics with a slightly grayed-out background
+    # Boxed-out metrics with uniform size and grayed-out background
     st.markdown(
         """
         <style>
@@ -200,6 +199,46 @@ def display_identity_data():
             """,
             unsafe_allow_html=True,
         )
+
+    # Charts for Identity
+    st.subheader("Channel Distribution")
+    channel_data = data["channel_distribution"]
+    channel_bar_fig = px.bar(
+        x=channel_data["Categories"],
+        y=channel_data["Total Identifiers"],
+        text=[f"{v:,}" for v in channel_data["Total Identifiers"]],
+        labels={'x': "Category", 'y': "Total Identifiers"},
+        title="Total Identifiers by Channel"
+    )
+    channel_bar_fig.update_traces(textposition="outside")
+    st.plotly_chart(channel_bar_fig)
+
+    st.subheader("Unique Channel Reach (%)")
+    unique_channel_fig = px.bar(
+        x=channel_data["Categories"],
+        y=channel_data["Unique Channel Reach (%)"],
+        text=[f"{v}%" for v in channel_data["Unique Channel Reach (%)"]],
+        labels={'x': "Category", 'y': "Reach (%)"},
+        title="Unique Channel Reach (%)"
+    )
+    unique_channel_fig.update_traces(textposition="outside")
+    st.plotly_chart(unique_channel_fig)
+
+    st.subheader("CoreID Match and Reach")
+    match_gauge = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=data["coreid_match_reach"]["Match Rate (%)"],
+        title={"text": "Match Rate (%)"},
+        gauge={"axis": {"range": [0, 100]}}
+    ))
+    reach_gauge = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=data["coreid_match_reach"]["Reach Rate (%)"],
+        title={"text": "Reach Rate (%)"},
+        gauge={"axis": {"range": [0, 100]}}
+    ))
+    st.plotly_chart(match_gauge)
+    st.plotly_chart(reach_gauge)
 
 # Hygiene Reporting
 def display_hygiene_data():
