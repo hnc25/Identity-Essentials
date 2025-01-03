@@ -126,7 +126,7 @@ def display_identity_data():
     time_range = st.selectbox("Select Time Range:", ["1 Month", "3 Months", "6 Months"], index=0)
     data = get_identity_data(time_range)
 
-        st.markdown(
+st.markdown(
         """
         <style>
         .metric-box {
