@@ -269,8 +269,8 @@ def display_hygiene_data():
 # Main App
 def main():
     st.title("Identity Essentials Reporting")
-
-    tab = st.sidebar.selectbox("Select a Tab:", ["Identity", "Hygiene"])
+    st.sidebar.header("Choose a report")
+    tab = st.sidebar.radio("Select a Tab:", ["Identity", "Hygiene"], index=0)
 
     if tab == "Identity":
         display_identity_data()
